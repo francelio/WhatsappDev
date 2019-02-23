@@ -142,7 +142,7 @@ export const sendImage = (Blob,callback)=>{
 		console.log('callback: ', callback)
 		fbimage.put(Blob,{ contentType:'image/jpeg'})
 			.then(()=>{
-				alert("fim upload");
+				
 				 callback( tmpKey );
 
 			})
