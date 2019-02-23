@@ -31,7 +31,7 @@ export class ConversaInterna extends Component {
 		super(props);
 		this.state = {
 			inputText: '',
-			imagetmp: null
+			pct: 0
 		};
 		this.voltar = this.voltar.bind(this);
 		this.sendMsg = this.sendMsg.bind(this);
@@ -107,9 +107,23 @@ export class ConversaInterna extends Component {
 						return RNFetchBlob.polyfill.Blob.build(data, { type: 'image/jpeg;BASE64' });
 					})
 					.then((blob) => {
-						this.props.sendImage(blob, (imgName) => {
+						this.props.sendImage(
+							blob,
+							(snapshot)=>{
+								//progress
+								let pct = (snapshot.bytesTransferred / snapshot.totalBytes)
+								let state = this.state;
+								state.pct = pct;
+								this.setState(state);
+							}
+							,(imgName) => {
+								//complete
+								let state = this.state;
+								state.pct = 0;
+								this.setState(state);
 							this.props.sendMenssage('image', imgName, this.props.uid, this.props.activeChat);
-						 });
+						 	}
+						 );
 					});
 
 			}
@@ -126,26 +140,29 @@ export class ConversaInterna extends Component {
 			// onContentSizeChange
 			// onLayout
 
-			<KeyboardAvoidingView style={stylessss.container} behavior={AreaBehavior} keyboardVerticalOffset={AreaOffeset}>
+			<KeyboardAvoidingView style={styles.container} behavior={AreaBehavior} keyboardVerticalOffset={AreaOffeset}>
 				<FlatList
 					ref={(ref) => { this.chatArea = ref }}
 					onContentSizeChange={() => { this.chatArea.scrollToEnd({ animated: true }) }}
 					onLayout={() => { this.chatArea.scrollToEnd({ animated: true }) }}
 
-					style={stylessss.chatArea}
+					style={styles.chatArea}
 					data={this.props.activeChatMenssages}
 					renderItem={({ item }) => <MensagemItem data={item} me={this.props.uid} />}
 				/>
-				<View style={stylessss.imageTmp}>
-					<Image style={stylessss.imageTmpImage} source={this.state.imagetmp} />
-				</View>
-				<View style={stylessss.sendArea}>
-					<TouchableHighlight style={stylessss.imageButton} underlayColor={false} onPress={this.chooseImage}>
-						<Image style={stylessss.imageBtnImage} source={require('../assets/images/new_image.png')} />
+				{this.state.pct > 0 && 
+					<View style={styles.imageTmp}>
+						<View style={[ {width:this.state.pct+'%'} , styles.imageTmpBar]}/>
+					</View>
+				}
+
+				<View style={styles.sendArea}>
+					<TouchableHighlight style={styles.imageButton} underlayColor={false} onPress={this.chooseImage}>
+						<Image style={styles.imageBtnImage} source={require('../assets/images/new_image.png')} />
 					</TouchableHighlight>
-					<TextInput style={stylessss.sendInput} value={this.state.inputText} onChangeText={(inputText) => this.setState({ inputText })} />
-					<TouchableHighlight style={stylessss.sendButton} underlayColor={false} onPress={this.sendMsg}>
-						<Image style={stylessss.sendImage} source={require('../assets/images/send.png')} />
+					<TextInput style={styles.sendInput} value={this.state.inputText} onChangeText={(inputText) => this.setState({ inputText })} />
+					<TouchableHighlight style={styles.sendButton} underlayColor={false} onPress={this.sendMsg}>
+						<Image style={styles.sendImage} source={require('../assets/images/send.png')} />
 					</TouchableHighlight>
 				</View>
 			</KeyboardAvoidingView >
@@ -154,7 +171,7 @@ export class ConversaInterna extends Component {
 
 }
 
-const stylessss = StyleSheet.create({
+const styles = StyleSheet.create({
 	container: {
 		flex: 1
 	},
@@ -193,12 +210,11 @@ const stylessss = StyleSheet.create({
 		height: 48,
 	},
 	imageTmp: {
-		height: 100,
-		backgroundColor: '#DDDDDD'
+		height: 5,
 	},
-	imageTmpImage: {
-		width: 100,
-		height: 100,
+	imageTmpBar: {
+		height: 5,
+		backgroundColor:'#FF0000'
 	}
 });
 

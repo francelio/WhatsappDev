@@ -130,7 +130,7 @@ export const setActiveChat=(chatId)=>{
 	};
 };
 
-export const sendImage = (Blob,callback)=>{
+export const sendImage = (Blob,progressCallback,successCallback)=>{
 	return (dispatch) => {
 		// gerar uma chave no firebase
 		
@@ -138,14 +138,20 @@ export const sendImage = (Blob,callback)=>{
 		// preparando a referencia da imagem 
 		let fbimage = firebase.storage().ref().child('images').child(tmpKey);	
 		// enviando a imagem para o firebase
-		console.log(Blob);
-		console.log('callback: ', callback)
-		fbimage.put(Blob,{ contentType:'image/jpeg'})
-			.then(()=> callback( tmpKey )
-			)
-			.catch((error)=>{
-				alert(error.code);
+		fbimage.put(Blob,{ contentType:'image/jpeg'}).on('state_changed',
+		progressCallback,
+		(error)=>{
+			//error
+			alert(error.code);
+		},
+		()=>{
+			// success
+			fbimage.getDownloadURL().then((url)=>{
+				successCallback( url );
 			});
+			
+		})
+			
 	}
 };
 
