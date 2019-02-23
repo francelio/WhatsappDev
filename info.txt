@@ -1,0 +1,31 @@
+users
+- 123
+-- name: Bonieky
+-- chats
+--- 1
+---- id: 1
+
+chats
+- 1
+-- members
+--- 123
+---- id: 123
+--- 456
+---- id: 456
+-- messages
+--- xyz
+---- date: ...
+---- uid: 1
+---- m: "Oi"
+--- abc
+---- date: ...
+---- uid: 2
+---- m: "Opa, e ai?"
+
+
+
+
+
+
+
+

@@ -1,0 +1,17 @@
+{
+    "editor.fontFamily": "Fira Code",
+    "editor.lineHeight": 24,
+    "editor.fontLigatures": true,
+
+    "editor.rulers": [80,120],
+   
+    //Aumenta a fonte do terminal
+    "terminal.integrated.fontSize":14,
+
+    //aplica um sinal visual na esquerda
+    "editor.renderLineHighlight":"gutter",
+
+    "workbench.iconTheme": "material-icon-theme",
+    "workbench.colorTheme": "Dracula",
+
+}
