@@ -138,7 +138,7 @@ export const sendImage = (Blob,callback)=>{
 		// preparando a referencia da imagem 
 		let fbimage = firebase.storage().ref().child('images').child(tmpKey);	
 		// enviando a imagem para o firebase
-		alert(Blob);
+		console.log(Blob);
 		console.log('callback: ', callback)
 		fbimage.put(Blob,{ contentType:'image/jpeg'})
 			.then(()=>{
