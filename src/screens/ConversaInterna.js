@@ -107,15 +107,11 @@ export class ConversaInterna extends Component {
 						return RNFetchBlob.polyfill.Blob.build(data, { type: 'image/jpeg;BASE64' });
 					})
 					.then((blob) => {
-						this.props.sendImage(blob, () => { });
+						this.props.sendImage(blob, (imgName) => {
+							this.props.sendMenssage('image', imgName, this.props.uid, this.props.activeChat);
+						 });
 					});
 
-				// You can also display the image using data:
-				const source = { uri: 'data:image/jpeg;base64,' + response.data };
-
-				this.setState({
-					imagetmp: source,
-				});
 			}
 		});
 	}

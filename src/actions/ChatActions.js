@@ -141,11 +141,8 @@ export const sendImage = (Blob,callback)=>{
 		console.log(Blob);
 		console.log('callback: ', callback)
 		fbimage.put(Blob,{ contentType:'image/jpeg'})
-			.then(()=>{
-				
-				 callback( tmpKey );
-
-			})
+			.then(()=> callback( tmpKey )
+			)
 			.catch((error)=>{
 				alert(error.code);
 			});
