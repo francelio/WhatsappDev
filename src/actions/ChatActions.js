@@ -48,7 +48,8 @@ export const getChatList = ( userUid,callback ) => {
 			snapshot.forEach((childItem)=>{
 				chats.push({
 						key:childItem.key,
-						title:childItem.val().title
+						title:childItem.val().title,
+						other:childItem.val().other,
 					});
 			});
 			callback();
@@ -86,13 +87,15 @@ export const createChat=(userUid1,userUid2)=> {
 
 		//associando aos envolvidos 
 		let chatId = newChat.key;
+
 		// pegar nome  do userUid1
 		firebase.database().ref('users').child(userUid2).once('value').then((snapshot)=>{
 			//associando usuario1 no chat
 			firebase.database().ref('users').child(userUid1).child('chats')
 			.child(chatId).set({
 				id:chatId,
-				title:snapshot.val().name
+				title:snapshot.val().name,
+				other:userUid2
 			});
 	
 		});
@@ -103,7 +106,8 @@ export const createChat=(userUid1,userUid2)=> {
 				firebase.database().ref('users').child(userUid2).child('chats')
 				.child(chatId).set({
 					id:chatId,
-					title:snapshot.val().name
+					title:snapshot.val().name,
+					other:userUid1
 				}).then(()=>{
 					// depois de criar todos os envolvidaos no chat ele executa o thank
 					dispatch({

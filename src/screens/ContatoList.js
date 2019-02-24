@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { View, Text, StyleSheet,FlatList, ActivityIndicator } from 'react-native';
 import { connect } from 'react-redux';
-import { getContactList, createChat } from '../actions/ChatActions';
+import { getContactList, createChat,setActiveChat } from '../actions/ChatActions';
 import ContatoItem from '../components/ContatoList/ContatoItem';
 
 
@@ -26,11 +26,25 @@ export class ContatoList extends Component {
 	}
 
 	contatoClick(item){
-		//cria o chat 
-		this.props.createChat( this.props.uid, item.key );
-		// manda para a tela de lista de chat
-		this.props.navigation.navigate('ConversasStack');
-		
+		let found = false;
+		let chatFound = '';
+		//alert('QT:'+this.props.chats.lenght);
+		for(let i in this.props.chats){
+			if (this.props.chats[i].other == item.key){
+				found = true;
+				chatFound = this.props.chats[i].key;
+			}
+		}
+		if (found == false){
+			//cria o chat 
+			this.props.createChat( this.props.uid, item.key );
+			// manda para a tela de lista de chat
+			this.props.navigation.navigate('ConversasStack');
+	
+		} else {
+			this.props.setActiveChat(chatFound);
+		}
+	
 	}
 
 	render() {
@@ -56,12 +70,12 @@ const styles = StyleSheet.create({
 const mapStateToProps = (state) => {
 	return {
 		uid:state.auth.uid,
-		contacts:state.chat.contacts
-
+		contacts:state.chat.contacts,
+		chats:state.chat.chats
 	};
 };
 
-const ContatoListConnect = connect(mapStateToProps, {getContactList, createChat  })(ContatoList);
+const ContatoListConnect = connect(mapStateToProps, {getContactList, createChat, setActiveChat })(ContatoList);
 export default ContatoListConnect;
 
 
