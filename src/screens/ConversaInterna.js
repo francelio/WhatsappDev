@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Platform, StyleSheet, TouchableHighlight, Image, BackHandler, FlatList, TextInput, KeyboardAvoidingView } from 'react-native';
+import { Modal, View,Text, Platform, StyleSheet, TouchableHighlight, Image, BackHandler, FlatList, TextInput, KeyboardAvoidingView } from 'react-native';
 import { connect } from 'react-redux';
 import { setActiveChat, sendMenssage, monitorChatOff, monitorChat, sendImage } from '../actions/ChatActions';
 import MensagemItem from '../components/ConversaInterna/MensagemItem';
@@ -31,12 +31,15 @@ export class ConversaInterna extends Component {
 		super(props);
 		this.state = {
 			inputText: '',
-			pct: 0
+			modalVisible: false,
+			pct: 0,
+			modalImage:null
 		};
 		this.voltar = this.voltar.bind(this);
 		this.sendMsg = this.sendMsg.bind(this);
 		this.chooseImage = this.chooseImage.bind(this);
-
+		this.setModalVisible = this.setModalVisible.bind(this);
+		this.imagePress = this.imagePress.bind(this);
 
 	}
 	componentDidMount() {
@@ -53,6 +56,18 @@ export class ConversaInterna extends Component {
 		BackHandler.removeEventListener('hardwereBackPress', this.voltar);
 
 
+	}
+	setModalVisible(visible) {
+        this.setState({modalVisible: visible});
+	}
+	
+	imagePress(img){
+		let state=this.state;
+		state.modalImage = img;
+		this.setState(state);
+		this.setModalVisible(!this.state.modalVisible);
+		
+		
 	}
 
 	voltar() {
@@ -148,7 +163,8 @@ export class ConversaInterna extends Component {
 
 					style={styles.chatArea}
 					data={this.props.activeChatMenssages}
-					renderItem={({ item }) => <MensagemItem data={item} me={this.props.uid} />}
+					
+					renderItem={({ item }) => <MensagemItem data={item} me={this.props.uid} onImagePress={this.imagePress} />}
 				/>
 				{this.state.pct > 0 && 
 					<View style={styles.imageTmp}>
@@ -165,6 +181,24 @@ export class ConversaInterna extends Component {
 						<Image style={styles.sendImage} source={require('../assets/images/send.png')} />
 					</TouchableHighlight>
 				</View>
+
+				<Modal animationType="slide" transparent={false} visible={this.state.modalVisible}>
+					
+					<View style={styles.modalClose} >
+							<TouchableHighlight style={styles.modalCloseIcon}
+							onPress={() => {
+								this.setModalVisible(!this.state.modalVisible);
+							}}>
+							<Text style={styles.modalCloseText }>X</Text>
+							</TouchableHighlight>
+						</View>
+					<View style={styles.modalView}>	
+						
+						<Image style={styles.modalImage } resizeMode="contain"
+                           source={{uri:this.state.modalImage}} />
+
+					</View>
+          		</Modal>
 			</KeyboardAvoidingView >
 		);
 	}
@@ -215,7 +249,34 @@ const styles = StyleSheet.create({
 	imageTmpBar: {
 		height: 5,
 		backgroundColor:'#FF0000'
+	},
+	modalView:{
+		paddingTop: 22,
+		flex:1,
+		backgroundColor:'#000000',
+		justifyContent:'center',
+		alignItems:'center'
+	},
+	modalImage:{
+		width:'100%',
+		height:'100%'
+
+	},
+	modalClose:{
+		height:50,
+		alignItems:'flex-end',
+		backgroundColor:'#000000',
+	},
+	modalCloseIcon:{
+		width:50,
+		height:50,
+	},
+	modalCloseText:{
+		color:'#FFFFFF',
+		height:50,
+		fontSize:20
 	}
+	
 });
 
 const mapStateToProps = (state) => {

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet,Image } from 'react-native';
+import { View, Text,TouchableHighlight, StyleSheet,Image } from 'react-native';
 
 export default class MensagemItem extends Component {
     constructor(props) {
@@ -20,8 +20,14 @@ export default class MensagemItem extends Component {
           txtAlign:txtAlign,
           dateMsg:this.getFormattedDate(this.props.data.date)
         };
+        
         this.getFormattedDate = this.getFormattedDate.bind(this);
+        this.imageCliked = this.imageCliked.bind(this);
+        
+        
     };  
+ 
+
     getFormattedDate(originalDate){
         // pega a data atual
         let cdate = new Date();
@@ -43,20 +49,30 @@ export default class MensagemItem extends Component {
 
         return newDate;
     }
+
+    imageCliked(){
+     this.props.onImagePress(this.props.data.imgSource);  
+    }
+
     render () {
         return (
-           
+
                 <View style={[MensagemItemStales.area,{alignSelf:this.state.align,backgroundColor:this.state.bgColor}]}>
                     {this.props.data.msgType == 'text' &&
                         <Text style={{textAlign:this.state.txtAlign}}>{this.props.data.m}</Text>
                     }
                     {this.props.data.msgType == 'image' &&
-                         //<Text style={{textAlign:this.state.txtAlign}}>imagem</Text>
-                         <Image style={MensagemItemStales.image } source={{uri:this.props.data.imgSource}} />
+                        <TouchableHighlight onPress={this.imageCliked}>
+                         <Image style={MensagemItemStales.image } 
+                           source={{uri:this.props.data.imgSource}} />
+                        </TouchableHighlight>
+
                     }
                                         
 
                     <Text style={MensagemItemStales.dateTxt}>{this.state.dateMsg}</Text>
+                   
+                
                 </View>
                 
         );
